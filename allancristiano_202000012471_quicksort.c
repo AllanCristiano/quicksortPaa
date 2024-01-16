@@ -8,72 +8,13 @@ typedef struct
     int total;
 } Resultado;
 
+// hoare aleatorio
+
+
+// end hoare aleatorio
 // hoare mediana
-int ha = 0;
 
-void trocarhm(int *a, int *b)
-{
-    int temp = *a;
-    *a = *b;
-    *b = temp;
-    ha++;
-}
-
-int encontrarPivohm(int arr[], int inicio, int fim)
-{
-    int n = fim - inicio + 1;
-    int v1 = (inicio + n) / 4;
-    int v2 = (inicio + n) / 2;
-    int v3 = 3 * (inicio + n) / 4;
-
-    if (arr[v1] > arr[v2])
-        trocarhm(&arr[v1], &arr[v2]);
-    if (arr[v1] > arr[v3])
-        trocarhm(&arr[v1], &arr[v3]);
-    if (arr[v2] > arr[v3])
-        trocarhm(&arr[v2], &arr[v3]);
-
-    trocarhm(&arr[v2], &arr[v3]);
-
-    return v3;
-}
-
-// Função de partição de Hoare
-int particionarhm(int arr[], int inicio, int fim)
-{
-    int pivIndex = encontrarPivohm(arr, inicio, fim);
-    int piv = arr[pivIndex];
-
-    trocarhm(&arr[pivIndex], &arr[fim]);
-
-    int i = inicio - 1;
-    for (int j = inicio; j < fim; j++)
-    {
-        if (arr[j] <= piv)
-        {
-            i++;
-            trocarhm(&arr[i], &arr[j]);
-        }
-    }
-
-    trocarhm(&arr[i + 1], &arr[fim]);
-
-    return i + 1;
-}
-
-void quicksorthm(int arr[], int inicio, int fim)
-{
-    if (inicio < fim)
-    {
-        // Encontrar o índice do pivô após a partição
-        int pivIndex = particionarhm(arr, inicio, fim);
-
-        ha += 2;
-        quicksorthm(arr, inicio, pivIndex - 1);
-        quicksorthm(arr, pivIndex + 1, fim);
-    }
-}
-//end hoare mediana
+// end hoare mediana
 
 // hoare padrao
 int hp = 1;
@@ -86,11 +27,11 @@ void trocarhp(int *a, int *b)
     hp++;
 }
 
-int particionarhp(int arr[], int baixo, int alto)
+int particionarhp(int arr[], int inicio, int fim)
 {
-    int pivo = arr[baixo];
-    int i = baixo - 1;
-    int j = alto + 1;
+    int pivo = arr[inicio];
+    int i = inicio - 1;
+    int j = fim + 1;
 
     while (1)
     {
@@ -251,12 +192,12 @@ void trocalp(int *a, int *b)
     lp++;
 }
 
-int particaolp(int arr[], int low, int high)
+int particaolp(int arr[], int inicio, int fim)
 {
-    int pivo = arr[high];
-    int i = (low - 1);
+    int pivo = arr[fim];
+    int i = (inicio - 1);
 
-    for (int j = low; j <= high - 1; j++)
+    for (int j = inicio; j <= fim - 1; j++)
     {
         if (arr[j] <= pivo)
         {
@@ -264,18 +205,18 @@ int particaolp(int arr[], int low, int high)
             trocalp(&arr[i], &arr[j]);
         }
     }
-    trocalp(&arr[i + 1], &arr[high]);
+    trocalp(&arr[i + 1], &arr[fim]);
     return (i + 1);
 }
 
-void quickSortlp(int arr[], int low, int high)
+void quickSortlp(int arr[], int inicio, int fim)
 {
-    if (low < high)
+    if (inicio < fim)
     {
-        int pi = particaolp(arr, low, high);
+        int pi = particaolp(arr, inicio, fim);
         lp += 2;
-        quickSortlp(arr, low, pi - 1);
-        quickSortlp(arr, pi + 1, high);
+        quickSortlp(arr, inicio, pi - 1);
+        quickSortlp(arr, pi + 1, fim);
     }
 }
 // end lomuto padrao
@@ -356,21 +297,17 @@ int main(int argc, char *argv[])
         strcpy(resultados[i][3].nome, "HP");
         resultados[i][3].total = hp;
 
-        // hoare mediana
-        ha = 0;
-        int *copia05 = copiarArray(array_p[i], array_tamanhos[i]);
-        quicksorthm(copia05, 0, array_tamanhos[i] - 1);
-        strcpy(resultados[i][4].nome, "HM");
-        resultados[i][4].total = ha;
+        
 
         free(array_p[i]);
     }
 
     for (int i = 0; i < total_array; i++)
     {
+        printf("%d: ", i);
         printf("N(%d) %s(%d) ", array_tamanhos[i], resultados[i][0].nome, resultados[i][0].total);
         printf("%s(%d) %s(%d) ", resultados[i][1].nome, resultados[i][1].total, resultados[i][2].nome, resultados[i][2].total);
-        printf("%s(%d) %s(%d) \n", resultados[i][3].nome, resultados[i][3].total, resultados[i][4].nome, resultados[i][4].total);
+        printf("%s(%d)\n ", resultados[i][3].nome, resultados[i][3].total);
     }
 
     fclose(arquivo);
